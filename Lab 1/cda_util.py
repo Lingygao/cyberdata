@@ -19,6 +19,7 @@ def label_encode(series):
 def split_labels(df):
     y = df['labels']
     X = df.drop(columns='labels')
+    
     return X, y
 
 def get_class_balance(df):
