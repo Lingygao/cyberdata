@@ -13,6 +13,8 @@ from imblearn.combine import SMOTETomek
 
 from scipy import interp
 
+import datetime
+
 # Ignore data conversion warnings (int -> float is a safe conversion)
 import warnings
 from sklearn.exceptions import DataConversionWarning
@@ -31,7 +33,7 @@ smote_tomek_func = SMOTETomek()
 
 def smote(X_train, y_train):
     
-    # Oversample (SMOTE) + undersample (remove Tomek links)
+    # Oversample (SMOTE)
     X_train, y_train = smote_func.fit_resample(X_train, y_train)
     
     return X_train, y_train
@@ -55,7 +57,7 @@ def prepare_null(X_train, y_train, X_test):
 def prepare_smote_analysis(X_train, y_train, X_test):
     
     # SMOTE
-    X_train, y_train = smote(X_train, y_train)
+    X_train, y_train = smote_tomek(X_train, y_train)
     
     return X_train, y_train, X_test
 
@@ -64,12 +66,12 @@ def prepare_smote_analysis(X_train, y_train, X_test):
 # Preprocessing for white box algorithm
 def prepare_whitebox(X_train, y_train, X_test):
     
-    X_train = X_train.copy()
-    X_test = X_test.copy()
+#     X_train = X_train.copy()
+#     X_test = X_test.copy()
     
     # Scale numerical values
-    X_train['amount_dollar'] = preprocessing.scale(X_train['amount_dollar'])
-    X_test['amount_dollar'] = preprocessing.scale(X_test['amount_dollar'])
+#     X_train['amount_dollar'] = preprocessing.scale(X_train['amount_dollar'])
+#     X_test['amount_dollar'] = preprocessing.scale(X_test['amount_dollar'])
     
     # SMOTE
     X_train, y_train = smote_tomek(X_train, y_train)
@@ -81,21 +83,22 @@ def prepare_whitebox(X_train, y_train, X_test):
 # Preprocessing for black box algorithm
 def prepare_blackbox(X_train, y_train, X_test):
     
+    X_train = X_train.copy()
+    X_test = X_test.copy()
+    
     # Feature scaling (here or after smote/pca?)
-    X_train['amount_dollar'] = preprocessing.scale(X_train['amount_dollar'])
-    X_test['amount_dollar'] = preprocessing.scale(X_test['amount_dollar'])
+#     X_train['amount_dollar'] = preprocessing.scale(X_train['amount_dollar'])
+#     X_test['amount_dollar'] = preprocessing.scale(X_test['amount_dollar'])
 
     # PCA (https://arxiv.org/ftp/arxiv/papers/1403/1403.1949.pdf)
-    pca = PCA(0.99)
+    pca = PCA(0.95)
     pca.fit(X_train)
 
     X_train = pca.transform(X_train)
     X_test  = pca.transform(X_test)
     
     # SMOTE
-    X_train, y_train = smote(X_train, y_train)
-    
-    # TODO: look into tomek links
+    X_train, y_train = smote_tomek(X_train, y_train)
     
     return X_train, y_train, X_test
 
@@ -166,13 +169,6 @@ def roc_cross_val(X, y, classifier, prep_func, folds=10, caption_msg=""):
             elif int(y_pred[x]) == 0:
                 if   y_test[x] == 0: TN += 1
                 elif y_test[x] == 1: FN += 1
-            else:
-                display(y_pred[x])
-                display(int(y_pred[x]))
-                display(int(y_pred[x]) == 0)
-                display(int(y_pred[x]) == 1)
-                
-                raise ValueError('WTF?')
         
         i += 1
         
@@ -218,9 +214,9 @@ def roc_cross_val(X, y, classifier, prep_func, folds=10, caption_msg=""):
     
     # Create confusion matrix
     confmat = pd.DataFrame({
-        'IsFraud': {'PredFraud': TP, 'PredLegit': FP, 'Total': FP + TP},
-        'IsLegit': {'PredFraud': FN, 'PredLegit': TN, 'Total': TN + FN},
-        'Total': {'PredFraud': FN + TP, 'PredLegit': TN + FP, 'Total': FP + TP + TN + FN},
+        'IsFraud': {'PredFraud': TP, 'PredLegit': FN, 'Total': TP + FN},
+        'IsLegit': {'PredFraud': FP, 'PredLegit': TN, 'Total': FP + TN},
+        'Total': {'PredFraud': TP + FP, 'PredLegit': FN + TN, 'Total': FP + TP + TN + FN},
     })
     
     # Calculate performance metrics

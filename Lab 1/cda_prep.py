@@ -4,6 +4,8 @@ from currency_converter import CurrencyConverter
 from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction import FeatureHasher
 
+from datetime import datetime
+
 label_encoder = LabelEncoder()
 hash_encoder = FeatureHasher(input_type='string')
 
@@ -38,6 +40,9 @@ def get_data(path):
     
     # Dummies: out of memory error
     # FeatureHash: wrong output format
+    
+    # Convert date to number (https://stackoverflow.com/a/16456128)
+#     df['creationdate'] = df['creationdate'].apply(datetime.toordinal)
 
     return df, df_raw
 
