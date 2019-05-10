@@ -33,7 +33,7 @@ def cross_val(X, y, classifier, folds=10):
         # TODO: PCA (https://arxiv.org/ftp/arxiv/papers/1403/1403.1949.pdf)
         
         # SMOTE
-        X_resampled, y_resampled = oversampling_func.fit_resample(X, y)
+        X_resampled, y_resampled = oversampling_func.fit_resample(X_train, y_train)
         
         # TODO: look into tomek links
         
@@ -83,7 +83,7 @@ def roc_cross_val(X, y, classifier, folds=10):
         
         
         # SMOTE
-        X_resampled, y_resampled = oversampling_func.fit_resample(X, y)
+        X_resampled, y_resampled = oversampling_func.fit_resample(X_train, y_train)
         
         probas_ = classifier.fit(X_resampled, y_resampled).predict_proba(X_test)
         
