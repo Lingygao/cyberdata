@@ -4,7 +4,8 @@ import matplotlib.patches as mpatches
 import matplotlib.colors as mcolors
 from datetime import timedelta
 
-PLOT_OFFSET = timedelta(minutes=15)
+# PLOT_OFFSET = timedelta(minutes=0)
+PLOT_OFFSET = timedelta(minutes=30)
 
 def get_time_slice(df, date_from, date_to):
     datemask = (df.index >= date_from) & (df.index <= date_to)
@@ -28,7 +29,7 @@ def scale_onoff(df):
     
     return df, onoff_cols
 
-def plot_data(df_full, features=[], figsize=(30,10)):
+def plot_data(df_full, features=[], figsize=(30,10), save=False):
     
     # Retrieve subset of columns
     df = df_full[features] if len(features) > 0 else df_full
@@ -54,7 +55,9 @@ def plot_data(df_full, features=[], figsize=(30,10)):
     for onoff_col in onoff_cols:
         
         current_color = "C"+str(color_index % 9)
-        col = df[onoff_col]
+        
+        # Get column and sort 
+        col = df[onoff_col].sort_index()
         
         current = 0
         span_list = []
@@ -71,11 +74,11 @@ def plot_data(df_full, features=[], figsize=(30,10)):
         # Plot "sensor on" ranges
         for i in range(0, len(span_list), 2):
             
-            # Handle last item
+            # Handle last item possibly out of range
             end = span_list[i+1] if i+1 < len(span_list) else col.index[-1]
             
             # Plot span for sensor "on" (shift with offset for nicer plots)
-            plt.axvspan(span_list[i] - PLOT_OFFSET, end, alpha=0.2, facecolor=current_color, zorder=0)
+            plt.axvspan(span_list[i] - PLOT_OFFSET, end - PLOT_OFFSET, alpha=0.2, facecolor=current_color, zorder=0)
             
         # Add legend entry
         patch = mpatches.Patch(color=current_color, alpha=0.4, label=onoff_col)
@@ -88,8 +91,13 @@ def plot_data(df_full, features=[], figsize=(30,10)):
     # Re-apply legend
     plt.legend(handles, __process_labels(labels))
     
+    # Add axis labels
+    plt.xlabel('Sensor reading')
+    plt.ylabel('Datetime')
+    
     # Show plot
-    plt.savefig("demo.png")
+    if save is not False:
+        plt.savefig(save, bbox_inches='tight', pad_inches=0)
     plt.show()
     
 def __process_labels(labels):
@@ -97,7 +105,7 @@ def __process_labels(labels):
     
     replace_map = {
         'L_': 'Water level ',
-        'S_': 'Status ',
+        'S_': '[On/Open] ',
         'F_': 'Flow ',
         'P_': 'Pressure ',
         'PU': 'Pump ',
