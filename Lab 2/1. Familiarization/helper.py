@@ -92,8 +92,8 @@ def plot_data(df_full, features=[], figsize=(30,10), save=False):
     plt.legend(handles, __process_labels(labels))
     
     # Add axis labels
-    plt.xlabel('Sensor reading')
-    plt.ylabel('Datetime')
+    plt.xlabel('Datetime')
+    plt.ylabel('Sensor reading')
     
     # Show plot
     if save is not False:
