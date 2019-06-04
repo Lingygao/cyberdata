@@ -149,3 +149,24 @@ def plot_residuals(spe, save=False):
     if save: plt.savefig(save, bbox_inches='tight', pad_inches=0, dpi=300)
     
     plt.show()
+    
+    
+def plot_attacks(df, save=False):
+    
+    fig, ax = plt.subplots(figsize=(10,2))
+
+    df.plot.line(ax=ax)
+    
+    plt.yticks([0, 1])
+
+    # Add axis labels
+    ax.set_xlabel('Date')
+    
+    # Format x-axis dates
+    plt.minorticks_off()
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+    
+    if save: plt.savefig(save, bbox_inches='tight', pad_inches=0, dpi=300)
+    
+    # Show figure
+    plt.show()
