@@ -6,7 +6,12 @@ import seaborn as sns
 
 from sklearn import preprocessing
 from sklearn import decomposition
+from sklearn.metrics import confusion_matrix
 
+
+###
+# DATA
+###
 
 def load_dataset(path, has_labels=True):
     df = pd.read_csv(path)
@@ -32,9 +37,30 @@ def get_time_slice(df, date_from, date_to):
     datemask = (df.index >= date_from) & (df.index <= date_to)
     return df.loc[datemask].copy()
 
+def get_test_labels(X_index):
+    
+    attacks = [
+        ('2017-01-16 09:00:00', '2017-01-19 06:00:00'),
+        ('2017-01-30 08:00:00', '2017-02-02 00:00:00'),
+        ('2017-02-09 03:00:00', '2017-02-10 09:00:00'),
+        ('2017-02-12 01:00:00', '2017-02-13 07:00:00'),
+        ('2017-02-24 05:00:00', '2017-02-28 08:00:00'),
+        ('2017-03-10 14:00:00', '2017-03-13 21:00:00'),
+        ('2017-03-25 20:00:00', '2017-03-27 01:00:00')
+    ]
+    
+    y = pd.Series(np.zeros(len(X_index)), index=X_index)
+    for date_from, date_to in attacks:
+        y.loc[(y.index >= date_from) & (y.index <= date_to)] = 1
+        
+    return y
 
 
-def pca_model(X, date_index, y=None, **kwargs):
+###
+# PCA
+###
+
+def pca_model(X, date_index, **kwargs):
     
     pca = decomposition.PCA(**kwargs)
 
@@ -48,17 +74,49 @@ def pca_model(X, date_index, y=None, **kwargs):
     var_expl = pca.explained_variance_ratio_
     cuml_var = var_expl.cumsum()
     
-    # Calculate residuals
+    # Reconstruct and calculate residuals
     X_reconstruct = pca.inverse_transform(X_pca)
-
-    # Calculate (normalized) squared prediction error (error = norm/length of residuals)
-    spe = np.linalg.norm(X - X_reconstruct, axis = 1) ** 2
-    spe /= max(spe)
-    residuals = pd.Series(spe, index=date_index)
+    residuals = pd.Series(__spe(X, X_reconstruct), index=date_index)
     
     return pca, X_reconstruct, residuals, (var_expl, cuml_var)
 
 
+def pca_pretrained(pca, X, date_index):
+    
+    # Transform data
+    X_pca = pca.transform(X)
+    
+    # Reconstruct and calculate residuals
+    X_reconstruct = pca.inverse_transform(X_pca)
+    residuals = pd.Series(__spe(X, X_reconstruct), index=date_index)
+    
+    return X_reconstruct, residuals
+    
+    
+def __spe(X, X_reconstruct):
+    # Calculate (normalized) squared prediction error (error = norm/length of residuals)
+    spe = np.linalg.norm(X - X_reconstruct, axis = 1) ** 2
+    return spe / max(spe)
+
+
+def score(labels, predictions):
+
+    tn, fp, fn, tp = confusion_matrix(labels, predictions).ravel()
+    
+    if tp == 0: return (0, 0, 0)
+    
+    precision =  tp / (tp + fp)
+    recall = tp / (tp + fn)
+    f1 = 2 * (precision * recall) / (precision + recall)
+    
+    return precision, recall, f1
+
+
+
+###
+# PLOTS
+###
+    
 def plot_variance(var_expl, cuml_var, save=False):
     
     fig, ax = plt.subplots(figsize=(8,4))

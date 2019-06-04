@@ -33,7 +33,6 @@ def load_dataset(path, has_labels=True):
     
     return df, labels
 
-
 def get_time_slice(df, date_from, date_to):
     datemask = (df.index >= date_from) & (df.index <= date_to)
     return df.loc[datemask].copy()
