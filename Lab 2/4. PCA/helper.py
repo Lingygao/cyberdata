@@ -56,26 +56,38 @@ def pca_model(X, date_index, y=None, **kwargs):
     spe /= max(spe)
     residuals = pd.Series(spe, index=date_index)
     
-    return X_pca, residuals, (var_expl, cuml_var)
+    return pca, X_reconstruct, residuals, (var_expl, cuml_var)
 
 
-def plot_variance(var_expl, cuml_var):
+def plot_variance(var_expl, cuml_var, save=False):
     
-    plt.figure(figsize=(10,6))
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(8,4))
     
-    ax.bar(range(var_expl.shape[0]), var_expl, alpha = 0.5, align = 'center', color='C3')
+    ax.bar(range(1,var_expl.shape[0]+1), var_expl, alpha = 0.5, align = 'center', color='C1')
     
     ax2 = ax.twinx()
-    ax2.step(range(cuml_var.shape[0]), cuml_var, where='mid', color='C0', linewidth=3)
+    ax2.step(range(1, cuml_var.shape[0]+1), cuml_var, where='mid', color='C0', linewidth=3)
+    ax2.set_ylim([0,1.05])
+    
+    ax.set_xlabel('Number of principal components')
+    ax.set_ylabel('Variance explained')
+    ax2.set_ylabel('Cumulative variance explained')
+    
+    plt.xticks(np.arange(1, var_expl.shape[0]+1, 1.0))
+    
+    if save: plt.savefig(save, bbox_inches='tight', pad_inches=0, dpi=300)
     
     plt.show()
     
-def plot_residuals(spe):
+def plot_residuals(spe, save=False):
     
-    plt.figure(figsize=(10,6))
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(10,4))
     
-    spe.plot.line()
+    spe.plot.line(ax=ax)
+    
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Residual (normalized)')
+    
+    if save: plt.savefig(save, bbox_inches='tight', pad_inches=0, dpi=300)
     
     plt.show()
