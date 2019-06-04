@@ -69,7 +69,7 @@ def plot_data(df_full, features=[], figsize=(30,10), xlabel='Date', save=False):
     df, onoff_cols = scale_onoff(df)
     
     # Create figure
-    fig = plt.figure(figsize=figsize, dpi=150)
+    fig = plt.figure(figsize=figsize)
     ax = plt.gca()
     
     # Format x-axis dates
@@ -132,7 +132,7 @@ def plot_data(df_full, features=[], figsize=(30,10), xlabel='Date', save=False):
     plt.ylabel('Sensor reading')
 
     # Show plot
-    if save: plt.savefig(save, bbox_inches='tight', pad_inches=0)
+    if save: plt.savefig(save, bbox_inches='tight', pad_inches=0, dpi=300)
     plt.show()
     
 def __process_labels(labels):

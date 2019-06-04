@@ -101,7 +101,7 @@ def __spe(X, X_reconstruct):
 
 def score(labels, predictions):
 
-    tn, fp, fn, tp = confusion_matrix(labels, predictions).ravel()
+    tn, fp, fn, tp = score_raw(labels, predictions)
     
     if tp == 0: return (0, 0, 0)
     
@@ -111,7 +111,8 @@ def score(labels, predictions):
     
     return precision, recall, f1
 
-
+def score_raw(labels, predictions):
+    return confusion_matrix(labels, predictions).ravel()
 
 ###
 # PLOTS
@@ -137,11 +138,14 @@ def plot_variance(var_expl, cuml_var, save=False):
     
     plt.show()
     
-def plot_residuals(spe, save=False):
+def plot_residuals(spe, threshold=None, save=False):
     
     fig, ax = plt.subplots(figsize=(10,4))
     
     spe.plot.line(ax=ax)
+    
+    if threshold:
+        plt.axhline(y=threshold, color='r', linestyle='--', linewidth=1)
     
     ax.set_xlabel('Date')
     ax.set_ylabel('Residual (normalized)')
@@ -155,8 +159,13 @@ def plot_attacks(df, save=False):
     
     fig, ax = plt.subplots(figsize=(10,2))
 
-    df.plot.line(ax=ax)
+    # Plot lines
+    df.plot.line(ax=ax, linewidth=1)
     
+    plt.fill_between(df.index, df['True'], step="pre", alpha=1)
+    plt.fill_between(df.index, df['Predicted'], step="pre", alpha=1)
+    
+    # Redyce yticks to just 0 and 1
     plt.yticks([0, 1])
 
     # Add axis labels
