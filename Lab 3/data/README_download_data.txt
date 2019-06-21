@@ -1,0 +1,1 @@
+Download https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-43/capture20110811.pcap.netflow.labeled into this folder.
