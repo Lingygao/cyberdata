@@ -1,0 +1,489 @@
+
+*****
+SMOTE: 0.000
+*****
+
+
+'Botnet samples: 204 / 432'
+
+
+Running: KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=None, n_neighbors=2, p=2,
+           weights='uniform')
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.84      0.96      0.90        82
+      Botnet       0.94      0.76      0.84        62
+
+   micro avg       0.88      0.88      0.88       144
+   macro avg       0.89      0.86      0.87       144
+weighted avg       0.88      0.88      0.87       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         79          3 
+        Botnet         15         47 
+
+
+Running: KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=None, n_neighbors=3, p=2,
+           weights='uniform')
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.92      0.93      0.92        82
+      Botnet       0.90      0.89      0.89        62
+
+   micro avg       0.91      0.91      0.91       144
+   macro avg       0.91      0.91      0.91       144
+weighted avg       0.91      0.91      0.91       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         76          6 
+        Botnet          7         55 
+
+
+Running: KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=None, n_neighbors=5, p=2,
+           weights='uniform')
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.89      0.93      0.91        82
+      Botnet       0.90      0.85      0.88        62
+
+   micro avg       0.90      0.90      0.90       144
+   macro avg       0.90      0.89      0.89       144
+weighted avg       0.90      0.90      0.90       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         76          6 
+        Botnet          9         53 
+
+
+Running: LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss='squared_hinge', max_iter=1000,
+     multi_class='ovr', penalty='l2', random_state=None, tol=0.0001,
+     verbose=0)
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.88      0.83      0.86        82
+      Botnet       0.79      0.85      0.82        62
+
+   micro avg       0.84      0.84      0.84       144
+   macro avg       0.84      0.84      0.84       144
+weighted avg       0.84      0.84      0.84       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         68         14 
+        Botnet          9         53 
+
+
+Running: SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape='ovr', degree=3, gamma='auto_deprecated',
+  kernel='rbf', max_iter=-1, probability=False, random_state=None,
+  shrinking=True, tol=0.001, verbose=False)
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.88      0.72      0.79        82
+      Botnet       0.70      0.87      0.78        62
+
+   micro avg       0.78      0.78      0.78       144
+   macro avg       0.79      0.80      0.78       144
+weighted avg       0.80      0.78      0.79       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         59         23 
+        Botnet          8         54 
+
+
+Running: DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=5,
+            max_features=None, max_leaf_nodes=None,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, presort=False, random_state=None,
+            splitter='best')
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.94      0.88      0.91        82
+      Botnet       0.85      0.92      0.88        62
+
+   micro avg       0.90      0.90      0.90       144
+   macro avg       0.89      0.90      0.89       144
+weighted avg       0.90      0.90      0.90       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         72         10 
+        Botnet          5         57 
+
+
+Running: RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
+            max_depth=5, max_features=1, max_leaf_nodes=None,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, n_estimators=10, n_jobs=None,
+            oob_score=False, random_state=None, verbose=0,
+            warm_start=False)
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.85      0.98      0.91        82
+      Botnet       0.96      0.77      0.86        62
+
+   micro avg       0.89      0.89      0.89       144
+   macro avg       0.91      0.87      0.88       144
+weighted avg       0.90      0.89      0.89       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         80          2 
+        Botnet         14         48 
+
+
+Running: AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+          learning_rate=1.0, n_estimators=50, random_state=None)
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.96      0.90      0.93        82
+      Botnet       0.88      0.95      0.91        62
+
+   micro avg       0.92      0.92      0.92       144
+   macro avg       0.92      0.93      0.92       144
+weighted avg       0.93      0.92      0.92       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         74          8 
+        Botnet          3         59 
+
+
+*****
+SMOTE: 0.900
+*****
+
+
+C:\Users\CodeSupply\Anaconda3\lib\site-packages\sklearn\svm\base.py:196: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+  "avoid this warning.", FutureWarning)
+
+'Botnet samples: 205 / 433'
+
+
+Running: KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=None, n_neighbors=2, p=2,
+           weights='uniform')
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.84      0.96      0.90        82
+      Botnet       0.94      0.76      0.84        62
+
+   micro avg       0.88      0.88      0.88       144
+   macro avg       0.89      0.86      0.87       144
+weighted avg       0.88      0.88      0.87       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         79          3 
+        Botnet         15         47 
+
+
+Running: KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=None, n_neighbors=3, p=2,
+           weights='uniform')
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.92      0.93      0.92        82
+      Botnet       0.90      0.89      0.89        62
+
+   micro avg       0.91      0.91      0.91       144
+   macro avg       0.91      0.91      0.91       144
+weighted avg       0.91      0.91      0.91       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         76          6 
+        Botnet          7         55 
+
+
+Running: KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=None, n_neighbors=5, p=2,
+           weights='uniform')
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.89      0.93      0.91        82
+      Botnet       0.90      0.85      0.88        62
+
+   micro avg       0.90      0.90      0.90       144
+   macro avg       0.90      0.89      0.89       144
+weighted avg       0.90      0.90      0.90       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         76          6 
+        Botnet          9         53 
+
+
+Running: LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss='squared_hinge', max_iter=1000,
+     multi_class='ovr', penalty='l2', random_state=None, tol=0.0001,
+     verbose=0)
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.88      0.83      0.86        82
+      Botnet       0.79      0.85      0.82        62
+
+   micro avg       0.84      0.84      0.84       144
+   macro avg       0.84      0.84      0.84       144
+weighted avg       0.84      0.84      0.84       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         68         14 
+        Botnet          9         53 
+
+
+Running: SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape='ovr', degree=3, gamma='auto_deprecated',
+  kernel='rbf', max_iter=-1, probability=False, random_state=None,
+  shrinking=True, tol=0.001, verbose=False)
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.88      0.71      0.78        82
+      Botnet       0.69      0.87      0.77        62
+
+   micro avg       0.78      0.78      0.78       144
+   macro avg       0.79      0.79      0.78       144
+weighted avg       0.80      0.78      0.78       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         58         24 
+        Botnet          8         54 
+
+
+Running: DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=5,
+            max_features=None, max_leaf_nodes=None,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, presort=False, random_state=None,
+            splitter='best')
+
+C:\Users\CodeSupply\Anaconda3\lib\site-packages\sklearn\svm\base.py:196: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+  "avoid this warning.", FutureWarning)
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.94      0.88      0.91        82
+      Botnet       0.85      0.92      0.88        62
+
+   micro avg       0.90      0.90      0.90       144
+   macro avg       0.89      0.90      0.89       144
+weighted avg       0.90      0.90      0.90       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         72         10 
+        Botnet          5         57 
+
+
+Running: RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
+            max_depth=5, max_features=1, max_leaf_nodes=None,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, n_estimators=10, n_jobs=None,
+            oob_score=False, random_state=None, verbose=0,
+            warm_start=False)
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.88      0.95      0.91        82
+      Botnet       0.93      0.82      0.87        62
+
+   micro avg       0.90      0.90      0.90       144
+   macro avg       0.90      0.89      0.89       144
+weighted avg       0.90      0.90      0.89       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         78          4 
+        Botnet         11         51 
+
+
+Running: AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+          learning_rate=1.0, n_estimators=50, random_state=None)
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.96      0.90      0.93        82
+      Botnet       0.88      0.95      0.91        62
+
+   micro avg       0.92      0.92      0.92       144
+   macro avg       0.92      0.93      0.92       144
+weighted avg       0.93      0.92      0.92       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         74          8 
+        Botnet          3         59 
+
+
+*****
+SMOTE: 1.000
+*****
+
+
+'Botnet samples: 228 / 456'
+
+
+Running: KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=None, n_neighbors=2, p=2,
+           weights='uniform')
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.84      0.95      0.89        82
+      Botnet       0.92      0.76      0.83        62
+
+   micro avg       0.87      0.87      0.87       144
+   macro avg       0.88      0.85      0.86       144
+weighted avg       0.87      0.87      0.87       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         78          4 
+        Botnet         15         47 
+
+
+Running: KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=None, n_neighbors=3, p=2,
+           weights='uniform')
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.91      0.90      0.91        82
+      Botnet       0.87      0.89      0.88        62
+
+   micro avg       0.90      0.90      0.90       144
+   macro avg       0.89      0.89      0.89       144
+weighted avg       0.90      0.90      0.90       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         74          8 
+        Botnet          7         55 
+
+
+Running: KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=None, n_neighbors=5, p=2,
+           weights='uniform')
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.90      0.93      0.92        82
+      Botnet       0.90      0.87      0.89        62
+
+   micro avg       0.90      0.90      0.90       144
+   macro avg       0.90      0.90      0.90       144
+weighted avg       0.90      0.90      0.90       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         76          6 
+        Botnet          8         54 
+
+
+Running: LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss='squared_hinge', max_iter=1000,
+     multi_class='ovr', penalty='l2', random_state=None, tol=0.0001,
+     verbose=0)
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.88      0.80      0.84        82
+      Botnet       0.77      0.85      0.81        62
+
+   micro avg       0.83      0.83      0.83       144
+   macro avg       0.82      0.83      0.82       144
+weighted avg       0.83      0.83      0.83       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         66         16 
+        Botnet          9         53 
+
+
+Running: SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape='ovr', degree=3, gamma='auto_deprecated',
+  kernel='rbf', max_iter=-1, probability=False, random_state=None,
+  shrinking=True, tol=0.001, verbose=False)
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.88      0.70      0.78        82
+      Botnet       0.68      0.87      0.77        62
+
+   micro avg       0.77      0.77      0.77       144
+   macro avg       0.78      0.78      0.77       144
+weighted avg       0.79      0.77      0.77       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         57         25 
+        Botnet          8         54 
+
+
+Running: DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=5,
+            max_features=None, max_leaf_nodes=None,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, presort=False, random_state=None,
+            splitter='best')
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.90      0.89      0.90        82
+      Botnet       0.86      0.87      0.86        62
+
+   micro avg       0.88      0.88      0.88       144
+   macro avg       0.88      0.88      0.88       144
+weighted avg       0.88      0.88      0.88       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         73          9 
+
+C:\Users\CodeSupply\Anaconda3\lib\site-packages\sklearn\svm\base.py:196: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+  "avoid this warning.", FutureWarning)
+
+        Botnet          8         54 
+
+
+Running: RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
+            max_depth=5, max_features=1, max_leaf_nodes=None,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, n_estimators=10, n_jobs=None,
+            oob_score=False, random_state=None, verbose=0,
+            warm_start=False)
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.91      0.94      0.92        82
+      Botnet       0.92      0.87      0.89        62
+
+   micro avg       0.91      0.91      0.91       144
+   macro avg       0.91      0.90      0.91       144
+weighted avg       0.91      0.91      0.91       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         77          5 
+        Botnet          8         54 
+
+
+Running: AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+          learning_rate=1.0, n_estimators=50, random_state=None)
+
+              precision    recall  f1-score   support
+
+  LEGITIMATE       0.96      0.88      0.92        82
+      Botnet       0.86      0.95      0.90        62
+
+   micro avg       0.91      0.91      0.91       144
+   macro avg       0.91      0.91      0.91       144
+weighted avg       0.91      0.91      0.91       144
+
+               LEGITIMATE     Botnet 
+    LEGITIMATE         72         10 
+        Botnet          3         59 
