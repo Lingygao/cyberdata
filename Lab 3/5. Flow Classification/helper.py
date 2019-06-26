@@ -14,7 +14,7 @@ import datetime
 CLASS_LABELS = {"LEGITIMATE":0, "Botnet":1}
 CLASS_LABEL_LIST = ["LEGITIMATE", "Botnet"]
 
-def preprocess_df_packets(df, train_test_split=True):
+def preprocess_df_packets(df, split_train_test=True):
     
     # Remove background traffic
     X = df[df.label != "Background"].copy()
@@ -23,66 +23,55 @@ def preprocess_df_packets(df, train_test_split=True):
     y = X["label"].copy().map(CLASS_LABELS)
     X.drop(columns=['label'], inplace=True)
     
-    # Reset (date) index and drop IP/date columns
-    # TODO? Store IP addresses as int and check if it improves the classification
+    # Reset (date) index
     X.reset_index(inplace=True, drop=True)
-    X.drop(columns=['src_ip', 'dest_ip'], inplace=True)
     
-    # Categorical columns to numbers
-    # TODO: check if one-hot performs better
+    # One-hot encode string columns
+    X = __onehot_encode(X, ['protocol', 'flags'])
     
-    X['protocol'] = __str_to_cat(X['protocol'])
-    X['flags'] = __str_to_cat(X['flags'])
-    
+    # Fill missing port numbers
     X['src_port'] = pd.to_numeric(X['src_port'], errors='coerce').fillna(0) # TODO: check 65535 instead of 0
     X['dest_port'] = pd.to_numeric(X['dest_port'], errors='coerce').fillna(0) # TODO: check 65535 instead of 0
+    
+    # Drop unused columns
+    X.drop(columns=['src_ip', 'dest_ip', 'protocol', 'flags'], inplace=True)
     
     # Scale dataset
     X = StandardScaler().fit_transform(X)
     
-    # TODO: correct class imbalance
-    
-    if train_test_split:
+    if split_train_test:
         # Return train / test split
         return train_test_split(X, y, test_size=.25, random_state=42)
     else:
         return X, y
 
 
-def preprocess_df_hosts(df, train_test_split=True):
+def preprocess_df_hosts(df, split_train_test=True):
     
     # Remove background traffic
     X = df[df.label != "Background"].copy()
     
-    # Reset (date) index and drop IP/date columns
-    # TODO? Store IP addresses as int and check if it improves the classification
+    # Reset (date) index
     X.reset_index(inplace=True, drop=True)
     
-    # Categorical columns to numbers
-    X['protocol'] = __str_to_cat(X['protocol'])
-    X['flags'] = __str_to_cat(X['flags'])
-    
-    X['src_port'] = pd.to_numeric(X['src_port'], errors='coerce').fillna(0) # TODO: check 65535 instead of 0
-    X['dest_port'] = pd.to_numeric(X['dest_port'], errors='coerce').fillna(0) # TODO: check 65535 instead of 0
+    # One-hot encode string columns
+    X = __onehot_encode(X, ['protocol', 'flags'])
     
     # Drop unused columns
-    X.drop(columns=['src_port', 'dest_ip', 'dest_port'], inplace=True)
+    X.drop(columns=['src_port', 'dest_ip', 'dest_port', 'protocol', 'flags'], inplace=True)
     
     # Rename and extract labels
     X["label"] = X["label"].map(CLASS_LABELS)
     
-    X_grp = X.groupby(by='src_ip').agg({
-        'duration':  'sum',
-#         'protocol':  pd.Series.mode, # mode == most occurring value
-#         'flags':     pd.Series.mode,
-        'protocol':  lambda x: pd.Series.mode(x)[0], # mode == most occurring value
-        'flags':     lambda x: pd.Series.mode(x)[0],
-        'tos':       'sum',
-        'packets':   'sum',
-        'bytes':     'sum',
-        'flows':     'sum',
-        'label':     'max'
-    })
+    # Determine group by aggregate functions
+    f = dict.fromkeys(X, 'sum')
+    f.update(dict.fromkeys([col for col in X if col.startswith('protocol_') or col.startswith('flags_')], lambda x: pd.Series.mode(x)[0])) # TODO: test with max
+    f.update(dict.fromkeys(['tos', 'packets', 'bytes', 'flows'], 'sum'))
+    f['label'] = 'max'
+    del f['src_ip']
+    
+    # Group by host
+    X_grp = X.groupby(by='src_ip').agg(f)
     
     # Rename and extract labels
     y_grp = X_grp["label"].copy()
@@ -91,19 +80,27 @@ def preprocess_df_hosts(df, train_test_split=True):
     # Scale dataset
     X_grp = StandardScaler().fit_transform(X_grp)
     
-    if train_test_split:
+    if split_train_test:
         # Return train / test split
         return train_test_split(X_grp, y_grp, test_size=.25, random_state=42)
     else:
         return X_grp, y_grp
 
 
-
 def __str_to_cat(series):
     return pd.Categorical(series).codes
 
-def __onehot_encode(df):
-    return pd.get_dummies(df)
+def __onehot_encode(df, cols):
+    """
+    @param df pandas DataFrame
+    @param cols a list of columns to encode 
+    @return a DataFrame with one-hot encoding
+    Source: https://stackoverflow.com/a/42523230
+    """
+    for each in cols:
+        dummies = pd.get_dummies(df[each], prefix=each, drop_first=True)
+        df = pd.concat([df, dummies], axis=1)
+    return df
 
 ####
 ## PLOTS
@@ -157,7 +154,7 @@ def print_cm(cm, labels, hide_zeroes=False, hide_diagonal=False, hide_threshold=
 ## PLOT
 ####
 
-def roc_cross_val(X, y, classifier, prep_func=None, folds=10, caption_msg=""):
+def roc_cross_val(X, y, classifier, prep_func=None, folds=10, save_path="", return_test_labels=False):
     """
     Source: https://scikit-learn.org/stable/auto_examples/model_selection/plot_roc_crossval.html#sphx-glr-auto-examples-model-selection-plot-roc-crossval-py
     """
@@ -170,9 +167,11 @@ def roc_cross_val(X, y, classifier, prep_func=None, folds=10, caption_msg=""):
     aucs = []
     mean_fpr = np.linspace(0, 1, 100)
     
-    fig = plt.figure(figsize=(10,6), dpi=72)
+    fig = plt.figure(figsize=(8,6), dpi=72)
     plt.tight_layout()
     
+    test_indices = []
+    pred_labels = []
     
     i = 0
     for train_index, test_index in StratifiedKFold(folds, shuffle=True).split(X, y):
@@ -180,6 +179,7 @@ def roc_cross_val(X, y, classifier, prep_func=None, folds=10, caption_msg=""):
         X_train, X_test = X[train_index], X[test_index]
         y_train, y_test = y[train_index], y[test_index]
         
+        test_indices.append(test_index)
         
         ## CLASSIFICATION
         
@@ -192,6 +192,7 @@ def roc_cross_val(X, y, classifier, prep_func=None, folds=10, caption_msg=""):
         
         # Predict labels
         y_pred = classifier.predict(X_test)
+        pred_labels.append(y_pred)
         
         # Calculate probabilities
         probas_ = classifier.predict_proba(X_test)
@@ -245,8 +246,8 @@ def roc_cross_val(X, y, classifier, prep_func=None, folds=10, caption_msg=""):
     plt.ylabel('True Positive Rate')
     
     clfname = type(classifier).__name__
-    plt.title('ROC curve - {}{}'.format(clfname, " - {}".format(caption_msg) if caption_msg is not "" else ""))
-    plt.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
+#     plt.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
+    plt.legend(loc="lower right")
     plt.tight_layout()
     
     # Save plot
@@ -258,7 +259,8 @@ def roc_cross_val(X, y, classifier, prep_func=None, folds=10, caption_msg=""):
     else:
         extra_info = ""
     
-    plt.savefig("output_figures/{}{}.pdf".format(type(classifier).__name__, extra_info), dpi=150)
+    if save_path:
+        plt.savefig(save_path, bbox_inches='tight', pad_inches=0, dpi=150)
     plt.show()
     
     # Create confusion matrix
@@ -277,6 +279,10 @@ def roc_cross_val(X, y, classifier, prep_func=None, folds=10, caption_msg=""):
     precisionrecall = precision + recall 
     f1 = 2 * (precision * recall) / (precision + recall) if precisionrecall > 0 else 0
     
-    # Return
-    return confmat, precision, recall, f1, mean_auc, std_auc
+    if return_test_labels:
+        return confmat, precision, recall, f1, mean_auc, std_auc, test_indices, pred_labels
+    
+    else:
+        # Return
+        return confmat, precision, recall, f1, mean_auc, std_auc
 
