@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
 import mmh3
+import sys
 
-def count_min_sketch(series, width, depth, normalize=False):
+def count_min_sketch(series, width, depth, normalize=False, show_mem=False):
     
     n = len(series)
     
@@ -26,6 +27,9 @@ def count_min_sketch(series, width, depth, normalize=False):
             # Hash ip and increment cell in matrix
             idx = mmh3.hash(ip, seeds[i]) % width
             sketch[i, idx] += 1
+    
+    if show_mem:
+        return sys.getsizeof(sketch)
     
     # Initialize result series
     result = pd.Series(0, index=uniqip)
